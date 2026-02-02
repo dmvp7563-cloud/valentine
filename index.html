@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valentine?</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --card-w: min(720px, 92vw);
+      --card-h: 280px;
+    }
+
+    body{
+      margin:0;
+      height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, #ffd6e8, transparent 40%),
+        radial-gradient(circle at 80% 30%, #ffe0f0, transparent 40%),
+        radial-gradient(circle at 50% 80%, #fff0f6, transparent 40%),
+        linear-gradient(135deg, #ffb3c6, #ffd6e0);
+      overflow: hidden;
+    }
+
+    .card{
+      width: var(--card-w);
+      height: var(--card-h);
+      background: rgba(255,255,255,0.92);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(255,77,109,0.25);
+      position: relative;
+      overflow: hidden;
+      padding: 30px;
+      backdrop-filter: blur(8px);
+      z-index: 2;
+    }
+
+    h1{
+      margin: 0 0 28px;
+      text-align:center;
+      font-size: clamp(22px, 3vw, 34px);
+      color:#222;
+    }
+
+    button{
+      position:absolute;
+      padding: 12px 30px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    button:active{
+      transform: scale(0.97);
+    }
+
+    #yes{
+      left: 28%;
+      top: 68%;
+      background:#ff4d6d;
+      color:white;
+      box-shadow: 0 10px 22px rgba(255,77,109,0.4);
+    }
+
+    #yes:hover{
+      box-shadow: 0 14px 28px rgba(255,77,109,0.55);
+    }
+
+    #no{
+      left: 60%;
+      top: 68%;
+      background:#fff;
+      border: 2px solid #ffd1dc;
+      color:#444;
+    }
+
+    .msg{
+      position:absolute;
+      inset:0;
+      background: rgba(255,255,255,0.96);
+      place-items:center;
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 800;
+      color:#ff2d55;
+      text-align:center;
+      padding: 24px;
+
+      display: none;       /* FIXED */
+      z-index: 5;
+    }
+    .msg.show{
+      display: grid;
+    }
+
+    /* Floating hearts */
+    .heart{
+      position: fixed;
+      bottom: -40px;
+      font-size: 20px;
+      color: rgba(255,77,109,0.7);
+      animation: floatUp linear infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes floatUp{
+      from{
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      to{
+        transform: translateY(-110vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card" id="card">
+    <h1>Prity, will you be my Valentine? 💖</h1>
+
+    <button id="yes">YES</button>
+    <button id="no">NO</button>
+
+    <div class="msg" id="msg">
+      Yayyy! 💕🎉<br>You just made my day.
+    </div>
+  </div>
+
+  <script>
+    const card = document.getElementById("card");
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const msg = document.getElementById("msg");
+
+    function moveNo(){
+      const c = card.getBoundingClientRect();
+      const b = noBtn.getBoundingClientRect();
+      const pad = 12;
+
+      const x = Math.random() * (c.width - b.width - pad * 2) + pad;
+      const y = Math.random() * (c.height - b.height - pad * 2) + pad;
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+    }
+
+    // Slippery NO
+    noBtn.addEventListener("mouseenter", moveNo);
+    noBtn.addEventListener("pointerdown", e => {
+      e.preventDefault();
+      moveNo();
+    });
+    noBtn.addEventListener("click", e => {
+      e.preventDefault();
+      moveNo();
+    });
+
+    // YES click
+    yesBtn.addEventListener("click", () => {
+      msg.classList.add("show");
+    });
+
+    // Floating hearts
+    function createHeart(){
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerText = Math.random() > 0.5 ? "💖" : "💘";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = 6 + Math.random() * 6 + "s";
+      heart.style.fontSize = 14 + Math.random() * 22 + "px";
+
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 12000);
+    }
+
+    setInterval(createHeart, 500);
+
+    // Initial placement
+    window.addEventListener("load", moveNo);
+    window.addEventListener("resize", moveNo);
+  </script>
+</body>
+</html>
